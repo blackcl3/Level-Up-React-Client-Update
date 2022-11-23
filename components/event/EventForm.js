@@ -2,27 +2,36 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { createEvent } from '../../utils/data/eventData';
+import { createEvent, updateEvent } from '../../utils/data/eventData';
 import { getGames } from '../../utils/data/gameData';
 
-const EventForm = ({ user }) => {
+const initialState = {
+  description: '',
+  date: '',
+  time: '',
+  game: 0,
+};
+
+const EventForm = ({ obj, user }) => {
   const [games, setGames] = useState([]);
 
-  const [currentEvent, setCurrentEvent] = useState({
-    description: '',
-    date: '',
-    time: '',
-    gameId: 0,
-  });
+  const [currentEvent, setCurrentEvent] = useState(initialState);
 
   const router = useRouter();
 
-  useEffect(() => {
+  const getGamesandSetForm = () => {
+    if (obj.id) {
+      setCurrentEvent(obj);
+    }
     getGames().then(setGames);
-  }, []);
+  };
+
+  useEffect(() => {
+    getGamesandSetForm();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [obj]);
 
   const handleChange = (e) => {
-    // TODO: Complete the onChange function
     const { name, value } = e.target;
     setCurrentEvent((prevState) => ({
       ...prevState,
@@ -36,10 +45,15 @@ const EventForm = ({ user }) => {
       description: currentEvent.description,
       date: currentEvent.date,
       time: currentEvent.time,
-      game_id: Number(currentEvent.gameId),
+      game: Number(currentEvent.game),
       organizer_id: user.uid,
     };
-    createEvent(event).then(() => router.push('/events'));
+    if (obj.id) {
+      const gameId = { ...currentEvent, game_id: currentEvent.game };
+      updateEvent(gameId).then(() => router.push('/events'));
+    } else {
+      createEvent(event).then(() => router.push('/events'));
+    }
   };
 
   return (
@@ -57,10 +71,10 @@ const EventForm = ({ user }) => {
         <Form.Control name="time" type="time" required value={currentEvent.time} onChange={handleChange} />
       </Form.Group>
       <Form.Group className="mb-3">
-        <Form.Select name="gameId" onChange={handleChange}>
+        <Form.Select name="game" onChange={handleChange}>
           <option value="">Select a Game</option>
           {games?.map((game) => (
-            <option key={game.id} value={game.id} selected={currentEvent.gameId === game.id}>
+            <option key={game.id} value={game.id} selected={currentEvent.game === game.id}>
               {game.title}
             </option>
           ))}
@@ -74,9 +88,20 @@ const EventForm = ({ user }) => {
 };
 
 EventForm.propTypes = {
+  obj: PropTypes.shape({
+    id: PropTypes.number,
+    description: PropTypes.string,
+    date: PropTypes.string,
+    time: PropTypes.string,
+    game: PropTypes.number,
+  }),
   user: PropTypes.shape({
     uid: PropTypes.string.isRequired,
   }).isRequired,
+};
+
+EventForm.defaultProps = {
+  obj: initialState,
 };
 
 export default EventForm;
