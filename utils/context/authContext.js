@@ -34,7 +34,6 @@ const AuthProvider = (props) => {
     firebase.auth().onAuthStateChanged((fbUser) => {
       if (fbUser) {
         setOAuthUser(fbUser);
-        console.warn(fbUser.uid);
         checkUser(fbUser.uid).then((gamerInfo) => {
           let userObj = {};
           if ('null' in gamerInfo) {
