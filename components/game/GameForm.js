@@ -59,10 +59,10 @@ const GameForm = ({ obj, user }) => {
     };
     if (obj.id) {
       const gameTypeId = { ...currentGame, game_type: Number(currentGame.game_type) };
-      updateGame(gameTypeId).then(() => router.push('/games'));
+      updateGame(gameTypeId).then(() => router.push(`/games/${gameTypeId.id}`));
     } else {
       // Send POST request to your API
-      createGame(game).then(() => router.push('/games'));
+      createGame(game).then(() => router.push(`/games/${game.id}`));
     }
   };
 
