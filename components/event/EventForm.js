@@ -50,9 +50,9 @@ const EventForm = ({ obj, user }) => {
     };
     if (obj.id) {
       const gameId = { ...currentEvent, game_id: currentEvent.game };
-      updateEvent(gameId).then(() => router.push('/events'));
+      updateEvent(gameId).then(() => router.push(`/events/${gameId.id}`));
     } else {
-      createEvent(event).then(() => router.push('/events'));
+      createEvent(event).then(() => router.push(`/events/${event.id}`));
     }
   };
 

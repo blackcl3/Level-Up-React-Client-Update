@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
+// eslint-disable-next-line no-unused-vars
 import { createGame, getGameTypes, updateGame } from '../../utils/data/gameData';
 
 const initialState = {
@@ -9,9 +10,7 @@ const initialState = {
   numberOfPlayers: 0,
   title: '',
   maker: '',
-  game_type: {
-    id: 0,
-  },
+  gameTypeId: 0,
 };
 
 const GameForm = ({ obj, user }) => {
@@ -22,11 +21,17 @@ const GameForm = ({ obj, user }) => {
   the properties of this state variable, you need to
   provide some default values.
   */
+  // eslint-disable-next-line no-unused-vars
   const router = useRouter();
-
   const getGames = () => {
     if (obj.id) {
-      setCurrentGame(obj);
+      setCurrentGame({
+        skillLevel: obj.skill_level,
+        numberOfPlayers: obj.number_of_players,
+        title: obj.title,
+        maker: obj.maker,
+        gameTypeId: obj.game_type.id,
+      });
     }
     getGameTypes().then(setGameTypes);
   };
@@ -54,12 +59,11 @@ const GameForm = ({ obj, user }) => {
       title: currentGame.title,
       number_of_players: Number(currentGame.numberOfPlayers),
       skill_level: Number(currentGame.skillLevel),
-      game_type: Number(currentGame.game_type.id),
+      game_type: Number(currentGame.gameTypeId),
       user_id: user.uid,
     };
     if (obj.id) {
-      const gameTypeId = { ...currentGame, game_type: Number(currentGame.game_type) };
-      updateGame(gameTypeId).then(() => router.push('/games'));
+      updateGame(game, obj.id).then(() => router.push(`/games/${obj.id}`));
     } else {
       // Send POST request to your API
       createGame(game).then(() => router.push('/games'));
@@ -86,10 +90,10 @@ const GameForm = ({ obj, user }) => {
           <Form.Control name="skillLevel" required value={currentGame.skillLevel} onChange={handleChange} />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Select name="game_type" onChange={handleChange}>
+          <Form.Select name="gameTypeId" onChange={handleChange}>
             <option value="">Select a Game Type</option>
             {gameTypes?.map((gameType) => (
-              <option key={gameType.id} value={gameType.id} selected={currentGame.game_type.id === gameType.id}>
+              <option key={gameType.id} value={gameType.id} selected={currentGame.gameTypeId === gameType.id}>
                 {gameType.label}
               </option>
             ))}
@@ -109,9 +113,9 @@ GameForm.propTypes = {
     id: PropTypes.number,
     title: PropTypes.string,
     maker: PropTypes.string,
-    numberOfPlayers: PropTypes.number,
-    skillLevel: PropTypes.number,
-    gameTypeId: PropTypes.number,
+    number_of_players: PropTypes.number,
+    skill_level: PropTypes.number,
+    game_type: PropTypes.number,
   }),
   user: PropTypes.shape({
     uid: PropTypes.string.isRequired,

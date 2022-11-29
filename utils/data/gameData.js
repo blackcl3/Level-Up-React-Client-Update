@@ -33,8 +33,8 @@ const getGameTypes = () => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
-const updateGame = (game) => new Promise((resolve, reject) => {
-  axios.put(`${clientCredentials.databaseURL}/games/${game.id}`, game)
+const updateGame = (game, id) => new Promise((resolve, reject) => {
+  axios.put(`${clientCredentials.databaseURL}/games/${id}`, game)
     .then(resolve)
     .catch(reject);
 });
