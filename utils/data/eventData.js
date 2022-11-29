@@ -31,6 +31,12 @@ const updateEvent = (event) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
+const deleteEvent = (id) => new Promise((resolve, reject) => {
+  axios.delete(`${clientCredentials.databaseURL}/events/${id}`)
+    .then(resolve)
+    .catch(reject);
+});
+
 export {
-  getEvents, getEventById, createEvent, updateEvent,
+  getEvents, getEventById, createEvent, updateEvent, deleteEvent,
 };
