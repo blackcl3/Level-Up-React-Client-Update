@@ -39,6 +39,12 @@ const updateGame = (game, id) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
+const deleteGame = (id) => new Promise((resolve, reject) => {
+  axios.delete(`${clientCredentials.databaseURL}/games/${id}`)
+    .then(resolve)
+    .catch(reject);
+});
+
 export {
-  getGames, getGameById, createGame, getGameTypes, updateGame,
+  getGames, getGameById, createGame, getGameTypes, updateGame, deleteGame,
 };
