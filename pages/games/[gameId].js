@@ -19,5 +19,5 @@ export default function GameDetailPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, gameId]);
 
-  return <GameCard title={game.title} maker={game.maker} numberOfPlayers={game.number_of_players} skillLevel={game.skill_level} user={user} />;
+  return <GameCard title={game.title} maker={game.maker} numberOfPlayers={game.number_of_players} skillLevel={game.skill_level} user={user} gameType={game.game_type} />;
 }

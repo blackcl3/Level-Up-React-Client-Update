@@ -24,7 +24,7 @@ function Event() {
         Register New Game
       </Button>
       {events?.map((event) => (
-        <EventCard game={event.game} description={event.description} date={event.date} time={event.time} />
+        <EventCard id={event.id} game={event.game} description={event.description} date={event.date} time={event.time} />
       ))}
     </>
   );
