@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { clientCredentials } from '../client';
 
-const getEvents = () => new Promise((resolve, reject) => {
-  axios.get(`${clientCredentials.databaseURL}/events`)
+const getEvents = (user = '') => new Promise((resolve, reject) => {
+  axios
+    .get(`${clientCredentials.databaseURL}/events?uid=${user}`)
     .then((response) => resolve(Object.values(response.data)))
     .catch(reject);
 });
@@ -37,6 +38,14 @@ const deleteEvent = (id) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
+const leaveEvent = (eventId, user) => new Promise((resolve, reject) => {
+  axios.delete(`${clientCredentials.databaseURL}/events/${eventId}/leave`, { data: user }).then(getEvents(user.user_id)).catch(reject);
+});
+
+const joinEvent = (eventId, user) => new Promise((resolve, reject) => {
+  axios.post(`${clientCredentials.databaseURL}/events/${eventId}/signup`, user).then(getEvents(user.user_id)).catch(reject);
+});
+
 export {
-  getEvents, getEventById, createEvent, updateEvent, deleteEvent,
+  getEvents, getEventById, createEvent, updateEvent, deleteEvent, leaveEvent, joinEvent,
 };
