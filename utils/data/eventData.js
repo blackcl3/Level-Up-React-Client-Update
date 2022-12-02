@@ -39,11 +39,11 @@ const deleteEvent = (id) => new Promise((resolve, reject) => {
 });
 
 const leaveEvent = (eventId, user) => new Promise((resolve, reject) => {
-  axios.delete(`${clientCredentials.databaseURL}/events/${eventId}/leave`, { data: user }).then(getEvents(user.user_id)).catch(reject);
+  axios.delete(`${clientCredentials.databaseURL}/events/${eventId}/leave`, { data: user }).then(resolve).catch(reject);
 });
 
 const joinEvent = (eventId, user) => new Promise((resolve, reject) => {
-  axios.post(`${clientCredentials.databaseURL}/events/${eventId}/signup`, user).then(getEvents(user.user_id)).catch(reject);
+  axios.post(`${clientCredentials.databaseURL}/events/${eventId}/signup`, user).then(resolve).catch(reject);
 });
 
 export {
