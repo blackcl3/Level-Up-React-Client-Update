@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import { useAuth } from '../../utils/context/authContext';
 import { createEvent, updateEvent } from '../../utils/data/eventData';
 import { getGames } from '../../utils/data/gameData';
 
@@ -12,9 +13,9 @@ const initialState = {
   game: 0,
 };
 
-const EventForm = ({ obj, user }) => {
+const EventForm = ({ obj }) => {
   const [games, setGames] = useState([]);
-
+  const user = useAuth();
   const [currentEvent, setCurrentEvent] = useState(initialState);
 
   const router = useRouter();
@@ -41,18 +42,10 @@ const EventForm = ({ obj, user }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const event = {
-      description: currentEvent.description,
-      date: currentEvent.date,
-      time: currentEvent.time,
-      game: Number(currentEvent.game),
-      organizer_id: user.uid,
-    };
     if (obj.id) {
-      const gameId = { ...currentEvent, game_id: currentEvent.game };
-      updateEvent(gameId).then(() => router.push(`/events/${gameId.id}`));
+      updateEvent(user, currentEvent, obj.id).then(() => router.push(`/events/${obj.id}`));
     } else {
-      createEvent(event).then(() => router.push(`/events/${event.id}`));
+      createEvent(currentEvent, user).then(() => router.push('/events'));
     }
   };
 

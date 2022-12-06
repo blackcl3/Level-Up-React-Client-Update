@@ -7,11 +7,13 @@ const GameCard = ({
   maker,
   numberOfPlayers,
   skillLevel,
+  gameType,
 }) => (
   <Card className="text-center">
     <Card.Header>{title}</Card.Header>
     <Card.Body>
       <Card.Title>By: {maker}</Card.Title>
+      <Card.Subtitle>Type: {gameType.label}</Card.Subtitle>
       <Card.Text>{numberOfPlayers} players needed</Card.Text>
     </Card.Body>
     <Card.Footer className="text-muted">Skill Level: {skillLevel}</Card.Footer>
@@ -23,6 +25,9 @@ GameCard.propTypes = {
   maker: PropTypes.string.isRequired,
   numberOfPlayers: PropTypes.number.isRequired,
   skillLevel: PropTypes.number.isRequired,
+  gameType: PropTypes.shape({
+    label: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default GameCard;

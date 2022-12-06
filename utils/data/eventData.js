@@ -1,33 +1,58 @@
 import axios from 'axios';
 import { clientCredentials } from '../client';
 
-const getEvents = (user = '') => new Promise((resolve, reject) => {
-  axios
-    .get(`${clientCredentials.databaseURL}/events?uid=${user}`)
-    .then((response) => resolve(Object.values(response.data)))
+const getEvents = (uid = '') => new Promise((resolve, reject) => {
+  fetch(`${clientCredentials.databaseURL}/events`, {
+    method: 'GET',
+    headers: {
+      Authorization: uid,
+    },
+  })
+    .then((resp) => resolve(resp.json()))
     .catch(reject);
 });
 
 const getEventById = (id) => new Promise((resolve, reject) => {
   axios.get(`${clientCredentials.databaseURL}/events/${id}`)
-    .then((response) => resolve(response.data))
+    .then((response) => (response.data))
+    .then((data) => {
+      resolve(({
+        id: data.id,
+        date: data.date,
+        time: data.time,
+        game: data.game,
+        organizerId: data.organizer_id,
+      }));
+    })
     .catch(reject);
 });
 
-const createEvent = (event) => new Promise((resolve, reject) => {
+const createEvent = (event, user) => new Promise((resolve, reject) => {
+  const eventObj = {
+    date: event.date,
+    time: event.time,
+    game: event.game,
+    organizer_id: user.uid,
+  };
   fetch(`${clientCredentials.databaseURL}/events`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(event),
+    body: JSON.stringify(eventObj),
   })
     .then(resolve)
     .catch(reject);
 });
 
-const updateEvent = (event) => new Promise((resolve, reject) => {
-  axios.put(`${clientCredentials.databaseURL}/events/${event.id}`, event)
+const updateEvent = (user, event, id) => new Promise((resolve, reject) => {
+  const eventObj = {
+    date: event.date,
+    time: event.time,
+    game: event.game,
+    organizer_id: user.uid,
+  };
+  axios.put(`${clientCredentials.databaseURL}/events/${id}`, eventObj)
     .then(resolve)
     .catch(reject);
 });

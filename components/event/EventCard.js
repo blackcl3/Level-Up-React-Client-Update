@@ -62,10 +62,10 @@ function EventCard({
 }
 
 EventCard.propTypes = {
-  game: PropTypes.string.isRequired,
+  game: PropTypes.number.isRequired,
   description: PropTypes.string.isRequired,
-  date: PropTypes.number.isRequired,
-  time: PropTypes.number.isRequired,
+  date: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired,
   onUpdate: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   joined: PropTypes.bool.isRequired,
