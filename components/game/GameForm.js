@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import { useAuth } from '../../utils/context/authContext';
 // eslint-disable-next-line no-unused-vars
 import { createGame, getGameTypes, updateGame } from '../../utils/data/gameData';
 
@@ -13,7 +14,7 @@ const initialState = {
   gameTypeId: 0,
 };
 
-const GameForm = ({ obj, user }) => {
+const GameForm = ({ obj }) => {
   const [gameTypes, setGameTypes] = useState([]);
   const [currentGame, setCurrentGame] = useState(initialState);
   /*
@@ -22,16 +23,11 @@ const GameForm = ({ obj, user }) => {
   provide some default values.
   */
   // eslint-disable-next-line no-unused-vars
+  const user = useAuth();
   const router = useRouter();
   const getGames = () => {
     if (obj.id) {
-      setCurrentGame({
-        skillLevel: obj.skill_level,
-        numberOfPlayers: obj.number_of_players,
-        title: obj.title,
-        maker: obj.maker,
-        gameTypeId: obj.game_type.id,
-      });
+      setCurrentGame(obj);
     }
     getGameTypes().then(setGameTypes);
   };
@@ -53,20 +49,11 @@ const GameForm = ({ obj, user }) => {
   const handleSubmit = (e) => {
     // Prevent form from being submitted
     e.preventDefault();
-
-    const game = {
-      maker: currentGame.maker,
-      title: currentGame.title,
-      number_of_players: Number(currentGame.numberOfPlayers),
-      skill_level: Number(currentGame.skillLevel),
-      game_type: Number(currentGame.gameTypeId),
-      user_id: user.uid,
-    };
     if (obj.id) {
-      updateGame(game, obj.id).then(() => router.push(`/games/${obj.id}`));
+      updateGame(user, currentGame, obj.id).then(() => router.push('/games'));
     } else {
       // Send POST request to your API
-      createGame(game).then(() => router.push('/games'));
+      createGame(currentGame, user).then(() => router.push('/games'));
     }
   };
 
